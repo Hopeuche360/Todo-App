@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './Todo.css';
 
 function Task({task, index, completeTask, deleteTask}) {
@@ -13,7 +13,7 @@ function Task({task, index, completeTask, deleteTask}) {
 
 function CreateTask({newTask}) {
     const [value, setValue] = useState("");
-    
+
     const handleSubmit = event => {
         event.preventDefault();
         if (!value) return;
@@ -31,11 +31,16 @@ function CreateTask({newTask}) {
 }
 
 export default function Todo() {
+    const [pendingTask, setPendingTask] = useState(0);
     const [tasks, setTasks] = useState([
         {title: "Write my Agile assignment", completed: true},
         {title: "Study React", completed: true},
         {title: "complete my task", completed: false}
     ]);
+
+    useEffect(() => {
+        setPendingTask(tasks.filter(task => !task.completed).length);
+    })
 
     const newTask = title => {
         const addTask = [...tasks, {title, completed: false}];
@@ -59,6 +64,7 @@ export default function Todo() {
             <div className="header">Hope's To-Do List</div>
             <div className="task">{tasks.map((task, index) => (<Task task={task} index={index} completeTask={completeTask} deleteTask={deleteTask} key={index}/>))}</div>
             <div className="create-task"><CreateTask newTask={newTask}/></div>
+            <div className="header">Pending Task ({pendingTask})</div>
         </div>
         
     );
